@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -c \"import sys,json,py_compile\ntry:\n d=json.load(sys.stdin)\nexcept Exception:\n sys.exit(0)\nf=(d.get('tool_input') or {}).get('file_path') or (d.get('tool_response') or {}).get('filePath') or ''\nif f.endswith('.py'):\n try:\n  py_compile.compile(f,doraise=True)\n except py_compile.PyCompileError as e:\n  sys.stderr.write(str(e)+chr(10))\n  sys.exit(2)\n\"",
+            "timeout": 15,
+            "statusMessage": "Checking Python syntax..."
+          }
+        ]
+      }
+    ]
+  }
+}
